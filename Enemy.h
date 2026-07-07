@@ -1,5 +1,5 @@
 #pragma once
-#include "Vector2.h"
+#include "Vector.h"
 #include "MapChip.h"
 
 class Player;
@@ -23,7 +23,7 @@ public:
 	/// </summary>
 	void Draw();
 
-	void UpdateParameter();
+	void UpdateBehavior();
 
 	void Vision();
 
@@ -52,17 +52,44 @@ public:
 	enum class Behavior {
 		// 行動フラグ
 		kPatrol,     // 巡回
+		kAlert,      // 警戒
 	    kDiscovery,  // 発見
 	    kChasing,    // 追跡
-	    kAlert       // 警戒
-	};
+		kSerch,      // 探索
+	}; 
 
 	Behavior behavior_ = Behavior::kPatrol;
+	Behavior nextBehavior_;
 
-	void BehaviorPatrolUpdate();
-	void BehaviorDiscpveryUpdate();
-	void BehaviorChasingUpdate();
-	void BehaviorAlertUpdate();
+	void BehaviorPatrolInitialize();  // 巡回行動の
+	void BehaviorAlertInitialize();  // 警戒行動の初期化
+	void BehaviorChasingInitialize();  // 追跡行動の初期化
+	void BehaviorPatrolUpdate();  // 巡回行動の更新
+	void BehaviorAlertUpdate();  // 警戒行動の更新
+	void BehaviorChasingUpdate();  // 追跡行動の更新
+
+	void SetPosition(const Vector2& position) {
+		position_ = position;
+	}
+
+	enum class MoveDirection {
+		Up,
+		Right,
+		Down,
+		Left
+	};
+
+	MoveDirection moveDirection_ = MoveDirection::Up;
+
+	float GetDirection() const;
+
+	bool UpdateTurn();
+	void SetTargetPosition();
+	void MovePatrol(float speed);
+	void MoveAlert(float speed);
+	void MoveChasing(float speed);
+
+	void BuildPath(Vector2 start, Vector2 goal);
 
 private:
 
@@ -71,8 +98,8 @@ private:
 	Vector2 acceleration_;
 	Vector2 angle_;
 	float speed_;
-	int parameter_;     // パラメーター値
-	int maxParameter_;  // 最大パラメーター値
+	float parameter_;     // パラメーター値
+	float maxParameter_;  // 最大パラメーター値
 	float width_;
 	float height_;
 	float halfWidth_;
@@ -80,13 +107,48 @@ private:
 	int color_;
 
 
+	// 視界内かのフラグ
+	bool isInView_ = false;
 
 	Vector2 playerPosition_; // プレイヤー座標
 	float viewDistance_;     // 視野距離
 	float viewAngle_;        // 視野角（ラジアン）
-	float direction_;        // 向いてる方向（ラジアン）
+
+	float lostTimer_ = 0.0f; // 見失ってからの経過時間
 
 	MapChip* mapChip_;
 
+	Vector2 targetPosition_;  // 目的地座標
+	bool hasTarget_ = false;  // 目的地があるかどうか
+	int turnTimer_ = 0;  // 回転タイマー
+	const int kTurnTime = 60;  // 回転にかかる時間
+	MoveDirection nextDirection_;  // 次の向き
+	bool isTurning_;  // 回転中かどうか
+
+	bool wasInView_ = false;
+
+	float patrolSpeed_ = 1.0f;  // 巡回時の移動速度
+	float alertSpeed_ = 2.5f;   // 警戒時の移動速度
+	float chasingSpeed_ = 2.0f; // 追跡時の移動速度
+
+	Vector2 lastSeenPlayerPos_;
+	bool hasLastSeen_ = false;
+
+	Vector2 moveStart_;
+	Vector2 moveEnd_;
+
+	std::vector<Vector2> path_;
+	int pathIndex_ = 0;
+	bool hasPath_ = false;
+
+	float currentAngle_; // 現在角度
+	float targetAngle_; // 目標角度
+	float startAngle_; // 開始角度
+	float rotateSpeed_;
+
+	float discoverSpeed_;
+	float playerDistance_;
+
+	int pTextureHandle_;
 };
 

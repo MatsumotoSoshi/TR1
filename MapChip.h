@@ -1,10 +1,27 @@
 #pragma once
 #include <vector>
 #include <string>
+#include "Vector.h"
 
 enum class MapChipType {
-	kBlank,   // 空き
-	kBlock    // ブロック
+	kBlank,
+	kBlock,
+	kPlayer,
+	kEnemy,
+};
+
+struct MapChipDataUnit {
+	MapChipType type;
+	uint8_t subID;
+};
+
+struct MapChipData {
+	std::vector<std::vector<MapChipDataUnit>> data;
+};
+
+enum MapChipCharIndex {
+	kChipType = 0,
+	kChipSubID = 1,
 };
 
 class MapChip {
@@ -14,10 +31,17 @@ public:
 
 	bool IsBlock(int x, int y) const;
 
+	Vector2 GetPlayerSpawnPosition() const;
+	Vector2 GetEnemySpawnPosition() const;
+
 	int GetChipSize() const { return kChipSize; }
 
-private:
-	std::vector<std::vector<MapChipType>> mapData_;
+	MapChipType GetChipType(int x, int y) const;
 
-	const int kChipSize = 40;    // マップチップサイズ
+private:
+	MapChipData mapChipData_;
+
+	static const int kChipSize = 40;
+	static const int kMapHeight = 36;
+	static const int kMapWidth = 64;
 };

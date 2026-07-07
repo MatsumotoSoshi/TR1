@@ -29,6 +29,9 @@
     <ClCompile Include="MapChip.cpp">
       <Filter>KamataEngine</Filter>
     </ClCompile>
+    <ClCompile Include="GameScene.cpp">
+      <Filter>KamataEngine</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="C:\KamataEngine\DirectXGame\audio\Audio.h">
@@ -114,7 +117,9 @@
     </ClInclude>
     <ClInclude Include="Enemy.h" />
     <ClInclude Include="Player.h" />
-    <ClInclude Include="Vector2.h" />
+    <ClInclude Include="Vector.h" />
     <ClInclude Include="MapChip.h" />
+    <ClInclude Include="GameScene.h" />
+    <ClInclude Include="MathUtility.h" />
   </ItemGroup>
 </Project>

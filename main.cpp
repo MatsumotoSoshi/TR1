@@ -1,7 +1,5 @@
 #include <Novice.h>
-#include "Enemy.h"
-#include "Player.h"
-#include "MapChip.h"
+#include "GameScene.h"
 
 const char kWindowTitle[] = "LE2B_25_マツモト_ソウシ_TR1";
 
@@ -13,16 +11,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	// ライブラリの初期化
 	Novice::Initialize(kWindowTitle, 1280, 720);
 
-	MapChip* mapChip = new MapChip();
-	mapChip->LoadCSV("Resources/map.csv");
-
-	Enemy* enemy = new Enemy();
-	enemy->Initialize();
-	enemy->SetMapChip(mapChip);
-
-	Player* player = new Player();
-	player->Initialize();
-
+	GameScene* gameScene = new GameScene();
+	gameScene->Initialize();
 
 	// キー入力結果を受け取る箱
 	char keys[256] = { 0 };
@@ -41,13 +31,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		/// ↓更新処理ここから
 		///
 
-
-		player->Update();
-
-		enemy->SetPlayerPosition(player->GetPosition());
-
-		enemy->Update();
-
+		gameScene->Update();
+		
 
 		///
 		/// ↑更新処理ここまで
@@ -57,11 +42,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		/// ↓描画処理ここから
 		///
 
-		mapChip->Draw();
-
-		player->Draw();
-
-		enemy->Draw();
+		gameScene->Draw();
 
 		///
 		/// ↑描画処理ここまで
@@ -76,9 +57,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		}
 	}
 
-	delete enemy;
-	delete player;
-	delete mapChip;
+	delete gameScene;
 
 	// ライブラリの終了
 	Novice::Finalize();
